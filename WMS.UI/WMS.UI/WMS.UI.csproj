@@ -6,4 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\WMS.Domain\WMS.Domain.csproj" />
+      <ProjectReference Include="..\WMS.Infrastructure\WMS.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

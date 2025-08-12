@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using WMS.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<WmsDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 
 var app = builder.Build();
 
@@ -19,6 +26,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WmsDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.MapControllerRoute(
     name: "default",
