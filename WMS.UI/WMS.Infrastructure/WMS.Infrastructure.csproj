@@ -15,4 +15,8 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\WMS.Domain\WMS.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
