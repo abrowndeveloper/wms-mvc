@@ -30,8 +30,13 @@ public class HomeController : Controller
         return View(new ProductsModel());
     }
 
+    public IActionResult UploadProducts()
+    {
+        return View(new UploadProductsModel());
+    }
+
     [HttpPost]
-    public async Task<IActionResult> UploadCsv(CsvUploadModel model)
+    public async Task<IActionResult> UploadProducts(CsvUploadModel model, bool skipErrors = false)
     {
         if (model.CsvFile == null || model.CsvFile.Length == 0)
         {
@@ -45,17 +50,15 @@ public class HomeController : Controller
             return RedirectToAction(nameof(Index));
         }
         
-        var request = new UpsertProductsRequest(model.CsvFile);
+        var request = new UpsertProductsRequest(model.CsvFile, skipErrors);
         var result = await _mediator.Send(request);
 
         if (result.Error is not null)
             TempData["Error"] = result.Error;
         else if (result.InvalidRows.Any() is false)
             TempData["Success"] = "CSV uploaded successfully!";
-        // else
-        //     // Add the invalid rows to model
 
-        return RedirectToAction(nameof(Products));
+        return View(new UploadProductsModel{ InvalidRows = result.InvalidRows, Error = result.Error });
     }
 
     public IActionResult Privacy()

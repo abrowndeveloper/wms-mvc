@@ -1,0 +1,112 @@
+@model WMS.UI.Views.UploadProductsModel
+@{
+    ViewData["Title"] = "Upload Products";
+}
+
+<style>
+    .invalid-rows-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+    
+    .invalid-rows-list li {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .invalid-rows-list h6 {
+        color: #dc3545;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .invalid-cells-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .invalid-cells-list li {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .invalid-cells-list li:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upload Products CSV</h5>
+            </div>
+            <div class="card-body">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                
+                <form asp-action="UploadProducts" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csvFile" class="form-label">Select CSV File</label>
+                        <input type="file" class="form-control" id="csvFile" name="CsvFile" accept=".csv" required />
+                        <div class="form-text">Please select a CSV file containing product data.</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="skipErrors" name="SkipErrors" value="true" />
+                            <label class="form-check-label" for="skipErrors">
+                                Skip rows with errors and continue processing
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload CSV</button>
+                </form>
+                
+                @if (Model.InvalidRows.Any())
+                {
+                    <ul class="invalid-rows-list">
+                        @foreach (var invalidRow in Model.InvalidRows)
+                        {
+                            <li>
+                                <h6>
+                                    Row @invalidRow.RowNumber is invalid.
+                                </h6>
+                                <ul class="invalid-cells-list">
+                                    @foreach (var invalidCell in invalidRow.InvalidCells)
+                                    {
+                                        <li>
+                                            @invalidCell.Reason
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div> 

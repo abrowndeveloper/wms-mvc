@@ -7,33 +7,10 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Upload Products CSV</h5>
+                <h5 class="mb-0">Products</h5>
             </div>
             <div class="card-body">
-                @if (TempData["Success"] != null)
-                {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        @TempData["Success"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                }
                 
-                @if (TempData["Error"] != null)
-                {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        @TempData["Error"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                }
-
-                <form asp-action="UploadCsv" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="csvFile" class="form-label">Select CSV File</label>
-                        <input type="file" class="form-control" id="csvFile" name="CsvFile" accept=".csv" required />
-                        <div class="form-text">Please select a CSV file containing product data.</div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Upload CSV</button>
-                </form>
             </div>
         </div>
     </div>

@@ -82,15 +82,15 @@ public class UpsertProductsHandler(
                     });
                 }
                 else
-                    invalidRows.Add(new InvalidRow(csv.Context.Parser.Row, row.InvalidCells));
+                    invalidRows.Add(new InvalidRow(csv.Context.Parser.Row - 1, row.InvalidCells));
             }
         }
-        catch (Exception e)
+        catch
         {
             return new("An error occurred while processing the CSV file.", [], 0);
         }
 
-        if (invalidRows.Any())
+        if (!request.SkipErrors && invalidRows.Any())
             return new(null, invalidRows, 0);
 
         if (products.Any())
