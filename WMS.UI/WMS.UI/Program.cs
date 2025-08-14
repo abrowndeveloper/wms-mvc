@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using WMS.Application;
 using WMS.Infrastructure.Data;
+using WMS.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ builder.Services.AddDbContext<WmsDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services
+    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>())
+    .AddRepositories()
+    .AddApplicationServices();
 
 var app = builder.Build();
 

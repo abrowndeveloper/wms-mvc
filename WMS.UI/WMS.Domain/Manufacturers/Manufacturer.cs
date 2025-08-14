@@ -1,3 +1,7 @@
 namespace WMS.Domain.Manufacturers;
 
-public record Manufacturer(int Id, string Name);
+public record Manufacturer
+{
+    public int Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+}

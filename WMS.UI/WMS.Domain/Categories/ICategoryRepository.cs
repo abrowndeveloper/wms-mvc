@@ -2,5 +2,5 @@ namespace WMS.Domain.Categories;
 
 public interface ICategoryRepository
 {
-    Task Upsert();
+    Task UpsertAsync(IReadOnlyList<Category> categories, CancellationToken cancellationToken = default);
 }

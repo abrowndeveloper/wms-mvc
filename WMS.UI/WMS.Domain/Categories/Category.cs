@@ -1,3 +1,7 @@
 namespace WMS.Domain.Categories;
 
-public record Category(int Id, string Name);
+public record Category
+{
+    public int Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+}

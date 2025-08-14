@@ -1,8 +1,11 @@
 using System.Diagnostics;
+using System.Globalization;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using WMS.UI.Models;
 using WMS.UI.UseCases.Products.UpsertProducts;
 using MediatR;
+using WMS.UI.Views;
 
 namespace WMS.UI.Controllers;
 
@@ -20,6 +23,11 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    public IActionResult Products()
+    {
+        return View(new ProductsModel());
     }
 
     [HttpPost]
@@ -42,10 +50,12 @@ public class HomeController : Controller
 
         if (result.Error is not null)
             TempData["Error"] = result.Error;
-        else
+        else if (result.InvalidRows.Any() is false)
             TempData["Success"] = "CSV uploaded successfully!";
+        // else
+        //     // Add the invalid rows to model
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Products));
     }
 
     public IActionResult Privacy()
