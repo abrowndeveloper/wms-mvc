@@ -69,17 +69,23 @@ public class UpsertProductsHandler(
                         SellPrice = row.SellPrice
                     });
 
-                    categories.Add(new Category
+                    if (categories.All(c => c.Id != row.CategoryId))
                     {
-                        Id = row.CategoryId,
-                        Name = row.Category,
-                    });
-
-                    manufacturers.Add(new Manufacturer
+                        categories.Add(new Category
+                        {
+                            Id = row.CategoryId,
+                            Name = row.Category,
+                        });
+                    }
+                    
+                    if (manufacturers.All(c => c.Id != row.ManufacturerId))
                     {
-                        Id = row.ManufacturerId,
-                        Name = row.Manufacturer,
-                    });
+                        manufacturers.Add(new Manufacturer
+                        {
+                            Id = row.ManufacturerId,
+                            Name = row.Manufacturer,
+                        });
+                    }
                 }
                 else
                     invalidRows.Add(new InvalidRow(csv.Context.Parser.Row - 1, row.InvalidCells));
@@ -93,14 +99,14 @@ public class UpsertProductsHandler(
         if (!request.SkipErrors && invalidRows.Any())
             return new(null, invalidRows, 0);
 
-        if (products.Any())
-            await productService.UpsertAsync(products, cancellationToken);
-
         if (categories.Any())
             await categoryService.UpsertAsync(categories, cancellationToken);
 
         if (manufacturers.Any())
             await manufacturerService.UpsertAsync(manufacturers, cancellationToken);
+        
+        if (products.Any())
+            await productService.UpsertAsync(products, cancellationToken);
 
         return new(null, [], products.Count);
     }

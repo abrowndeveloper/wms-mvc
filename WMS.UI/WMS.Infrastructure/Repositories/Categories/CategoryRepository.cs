@@ -1,5 +1,6 @@
 using WMS.Domain.Categories;
 using WMS.Infrastructure.Data;
+using DbCategory = WMS.Infrastructure.Models.Category;
 
 namespace WMS.Infrastructure.Repositories.Categories;
 
@@ -10,7 +11,15 @@ public class CategoryRepository(
     public async Task UpsertAsync(IReadOnlyList<Category> categories, CancellationToken cancellationToken = default)
     {
         // TODO: Make upsert actually upsert.
-        await dbContext.AddRangeAsync(categories, cancellationToken);
+        
+        var models = categories
+            .Select(c => new DbCategory
+            {
+                Name = c.Name
+            })
+            .ToArray();
+        
+        await dbContext.Categories.AddRangeAsync(models, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

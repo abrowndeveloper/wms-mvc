@@ -48,7 +48,4 @@ public class Product
     
     [Required]
     public int ManufacturerId { get; set; }
-    
-    [Required]
-    public int StockId { get; set; }
 } 
