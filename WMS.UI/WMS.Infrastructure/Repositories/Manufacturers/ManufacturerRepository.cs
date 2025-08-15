@@ -15,6 +15,7 @@ public class ManufacturerRepository(
         var models = manufacturers
             .Select(m => new DbManufacturer
             {
+                Id = m.Id,
                 Name = m.Name
             })
             .ToArray();

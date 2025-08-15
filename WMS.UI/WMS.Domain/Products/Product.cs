@@ -4,7 +4,7 @@ namespace WMS.Domain.Products;
 
 public record Product
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public string Sku { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string ManufacturersCode { get; init; } = string.Empty;

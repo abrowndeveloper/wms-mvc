@@ -6,8 +6,13 @@ public class ProductService(
     IProductRepository productRepository
     ) : IProductService
 {
-    public async Task UpsertAsync(IReadOnlyList<Product> products, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Product>> GetBySkusAsync(IReadOnlyCollection<string> skus, CancellationToken cancellationToken = default)
     {
-        await productRepository.UpsertAsync(products, cancellationToken);
+        return await productRepository.GetProducts(cancellationToken);
+    }
+    
+    public async Task InsertAsync(IReadOnlyList<Product> products, CancellationToken cancellationToken = default)
+    {
+        await productRepository.Insert(products, cancellationToken);
     }
 }

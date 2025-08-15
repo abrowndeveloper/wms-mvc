@@ -15,6 +15,7 @@ public class CategoryRepository(
         var models = categories
             .Select(c => new DbCategory
             {
+                Id = c.Id,
                 Name = c.Name
             })
             .ToArray();

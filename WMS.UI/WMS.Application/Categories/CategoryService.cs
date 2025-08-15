@@ -6,7 +6,7 @@ public class CategoryService(
     ICategoryRepository categoryRepository
     ) : ICategoryService
 {
-    public async Task UpsertAsync(IReadOnlyList<Category> categories, CancellationToken cancellationToken = default)
+    public async Task InsertAsync(IReadOnlyList<Category> categories, CancellationToken cancellationToken = default)
     {
         await categoryRepository.UpsertAsync(categories, cancellationToken);
     }

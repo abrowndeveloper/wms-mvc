@@ -5,7 +5,7 @@ namespace WMS.Infrastructure.Models;
 public class Product
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
     [MaxLength(255)]

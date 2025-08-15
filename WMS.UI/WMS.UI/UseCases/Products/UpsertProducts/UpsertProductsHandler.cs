@@ -49,46 +49,47 @@ public class UpsertProductsHandler(
             {
                 var row = ProductRowDtoFactory.CreateRow(rawRow);
 
-                if (!row.InvalidCells.Any())
+                if (row.InvalidCells.Any())
                 {
-                    products.Add(new Product
-                    {
-                        Id = new Random().Next(1, int.MaxValue), // TBC, temporary
-                        Sku = row.Sku,
-                        Name = row.Name,
-                        ManufacturersCode = row.ManufacturersCode,
-                        Summary = row.Summary,
-                        CategoryId = row.CategoryId,
-                        ManufacturerId = row.ManufacturerId,
-                        DateTimeCreated = row.DateTimeCreated,
-                        DateTimeUpdated = row.DateTimeUpdated,
-                        IsActive = row.IsActive,
-                        Weight = row.Weight,
-                        WeightUnit = row.WeightUnit,
-                        CostPrice = row.CostPrice,
-                        SellPrice = row.SellPrice
-                    });
-
-                    if (categories.All(c => c.Id != row.CategoryId))
-                    {
-                        categories.Add(new Category
-                        {
-                            Id = row.CategoryId,
-                            Name = row.Category,
-                        });
-                    }
-                    
-                    if (manufacturers.All(c => c.Id != row.ManufacturerId))
-                    {
-                        manufacturers.Add(new Manufacturer
-                        {
-                            Id = row.ManufacturerId,
-                            Name = row.Manufacturer,
-                        });
-                    }
-                }
-                else
                     invalidRows.Add(new InvalidRow(csv.Context.Parser.Row - 1, row.InvalidCells));
+                    continue;
+                }
+                
+                products.Add(new Product
+                {
+                    Id = Guid.NewGuid(),
+                    Sku = row.Sku,
+                    Name = row.Name,
+                    ManufacturersCode = row.ManufacturersCode,
+                    Summary = row.Summary,
+                    CategoryId = row.CategoryId,
+                    ManufacturerId = row.ManufacturerId,
+                    DateTimeCreated = row.DateTimeCreated,
+                    DateTimeUpdated = row.DateTimeUpdated,
+                    IsActive = row.IsActive,
+                    Weight = row.Weight,
+                    WeightUnit = row.WeightUnit,
+                    CostPrice = row.CostPrice,
+                    SellPrice = row.SellPrice
+                });
+
+                if (categories.All(c => c.Id != row.CategoryId))
+                {
+                    categories.Add(new Category
+                    {
+                        Id = row.CategoryId,
+                        Name = row.Category,
+                    });
+                }
+                
+                if (manufacturers.All(c => c.Id != row.ManufacturerId))
+                {
+                    manufacturers.Add(new Manufacturer
+                    {
+                        Id = row.ManufacturerId,
+                        Name = row.Manufacturer,
+                    });
+                }
             }
         }
         catch
@@ -100,13 +101,13 @@ public class UpsertProductsHandler(
             return new(null, invalidRows, 0);
 
         if (categories.Any())
-            await categoryService.UpsertAsync(categories, cancellationToken);
+            await categoryService.InsertAsync(categories, cancellationToken);
 
         if (manufacturers.Any())
-            await manufacturerService.UpsertAsync(manufacturers, cancellationToken);
+            await manufacturerService.InsertAsync(manufacturers, cancellationToken);
         
         if (products.Any())
-            await productService.UpsertAsync(products, cancellationToken);
+            await productService.InsertAsync(products, cancellationToken);
 
         return new(null, [], products.Count);
     }

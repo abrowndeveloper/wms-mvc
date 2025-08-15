@@ -19,7 +19,7 @@ public class WmsDbContext(
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Sku).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
             entity.Property(e => e.ManufacturersCode).IsRequired().HasMaxLength(255);
@@ -40,12 +40,14 @@ public class WmsDbContext(
         modelBuilder.Entity<Manufacturer>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
         });
         
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
         });
     }

@@ -17,8 +17,8 @@ public static class ProductRowDtoFactory
         if (string.IsNullOrWhiteSpace(rawRowDto.ManufacturersCode))
             invalidCells.Add(new(nameof(rawRowDto.ManufacturersCode), "ManufacturersCode cannot be null or whitespace"));
                 
-        if (string.IsNullOrWhiteSpace(rawRowDto.Summary))
-            invalidCells.Add(new(nameof(rawRowDto.Summary), "Summary cannot be null or whitespace"));
+        if (rawRowDto.Summary is not null && rawRowDto.Summary.Contains('<'))
+            invalidCells.Add(new(nameof(rawRowDto.Summary), "Summary contains invalid characters"));
                 
         if (string.IsNullOrWhiteSpace(rawRowDto.Category))
             invalidCells.Add(new(nameof(rawRowDto.Category), "Category cannot be null or whitespace"));
