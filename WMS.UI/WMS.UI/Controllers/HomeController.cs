@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using WMS.UI.Models;
 using WMS.UI.UseCases.Products.UpsertProducts;
 using WMS.UI.UseCases.Products.GetProducts;
+using WMS.UI.UseCases.Products.UpsertProduct;
+using WMS.UI.UseCases.Products.GetProduct;
 using MediatR;
+using WMS.Domain.Units;
+using WMS.UI.UseCases.Products.Common;
 using WMS.UI.Views;
 
 namespace WMS.UI.Controllers;
@@ -67,6 +71,51 @@ public class HomeController : Controller
             TempData["Success"] = "CSV uploaded successfully!";
 
         return View(new UploadProductsModel{ InvalidRows = result.InvalidRows, Error = result.Error });
+    }
+
+    public async Task<IActionResult> Product(Guid? id)
+    {
+        if (id is null)
+            return View(
+                new ProductModel
+                {
+                    Product = new ProductDto(null, string.Empty, string.Empty, string.Empty, false, string.Empty, 0,
+                        WeightUnit.KG.ToString(), 0, 0)
+                }
+            );
+
+        var getRequest = new GetProductRequest(id.Value);
+        var getResult = await _mediator.Send(getRequest);
+
+        if (getResult.Product is null)
+        {
+            TempData["Error"] = "Product not found.";
+            return RedirectToAction(nameof(Products));
+        }
+
+        var productModel = new ProductModel
+        {
+            Product = getResult.Product
+        };
+
+        return View(productModel);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Product(ProductModel model)
+    {
+        var upsertRequest = new UpsertProductRequest(model.Product);
+        var upsertResult = await _mediator.Send(upsertRequest);
+
+        if (upsertResult.Error is not null)
+        {
+            TempData["Error"] = upsertResult.Error;
+            return View(model);
+        }
+
+        TempData["Error"] = "Successfully saved!";
+        
+        return View(upsertResult.Product);
     }
 
     public IActionResult Privacy()

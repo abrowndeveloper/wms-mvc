@@ -1,8 +1,8 @@
 namespace WMS.UI.UseCases.Products.GetProducts;
 
-public record GetProductsResult(IReadOnlyList<ProductDto> Products);
+public record GetProductsResult(IReadOnlyList<ProductRowDto> Products);
 
-public record ProductDto(
+public record ProductRowDto(
     Guid Id,
     string Sku,
     string Name,

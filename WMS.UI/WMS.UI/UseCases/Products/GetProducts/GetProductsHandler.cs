@@ -13,7 +13,7 @@ public class GetProductsHandler(
 {
     public async Task<GetProductsResult> Handle(GetProductsRequest request, CancellationToken cancellationToken)
     {
-        var products = await productService.GetAllAsync(cancellationToken);
+        var products = await productService.GetProducts(cancellationToken);
 
         var manufacturerIds = products
             .Select(p => p.ManufacturerId)
@@ -36,11 +36,11 @@ public class GetProductsHandler(
         return new GetProductsResult(productDtos);
     }
 
-    private ProductDto ToProductDto(Product product, IReadOnlyList<Manufacturer> manufacturers, IReadOnlyList<Category> categories)
+    private ProductRowDto ToProductDto(Product product, IReadOnlyList<Manufacturer> manufacturers, IReadOnlyList<Category> categories)
     {
         var margin = product.SellPrice - product.CostPrice;
         
-        return new ProductDto(
+        return new ProductRowDto(
             product.Id,
             product.Sku,
             product.Name,

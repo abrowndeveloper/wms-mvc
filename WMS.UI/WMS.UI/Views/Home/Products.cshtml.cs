@@ -4,5 +4,5 @@ namespace WMS.UI.Views;
 
 public record ProductsModel
 {
-    public IReadOnlyList<ProductDto> Products { get; init; } = [];
+    public IReadOnlyList<ProductRowDto> Products { get; init; } = [];
 }

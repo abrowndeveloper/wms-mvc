@@ -10,6 +10,33 @@ public class ProductRepository(
     WmsDbContext dbContext
     ) : IProductRepository
 {
+    public async Task<Product?> GetProductById(Guid id, CancellationToken cancellationToken = default)
+    {
+        var dbProduct = await dbContext.Products
+            .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
+        
+        if (dbProduct is null)
+            return null;
+        
+        return new Product
+        {
+            Id = dbProduct.Id,
+            Sku = dbProduct.Sku,
+            CategoryId = dbProduct.CategoryId,
+            CostPrice = dbProduct.CostPrice,
+            DateTimeCreated = dbProduct.DateTimeCreated,
+            DateTimeUpdated = dbProduct.DateTimeUpdated,
+            IsActive = dbProduct.IsActive,
+            ManufacturerId = dbProduct.ManufacturerId,
+            Name = dbProduct.Name,
+            ManufacturersCode = dbProduct.ManufacturersCode,
+            SellPrice = dbProduct.SellPrice,
+            Summary = dbProduct.Summary,
+            Weight = dbProduct.Weight,
+            WeightUnit = (WeightUnit)dbProduct.WeightUnit
+        };
+    }
+    
     public async Task<IReadOnlyList<Product>> GetProducts(CancellationToken cancellationToken = default)
     {
         var existingProducts = await dbContext.Products
