@@ -60,7 +60,7 @@ public class ProductRowDtoFactoryTests
             DateCreated = "invalid-date",
             DateUpdated = "not-a-date",
             IsActive = "invalid",
-            Summary = "",
+            Summary = string.Join("", Enumerable.Range(1, 10000).Select(number => number.ToString())),
             Weight = "not-a-number",
             ManufacturersCode = "",
             WeightUnit = "invalid-unit",
@@ -81,7 +81,7 @@ public class ProductRowDtoFactoryTests
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Sku", Reason: "Sku cannot be null or whitespace" });
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Name", Reason: "Name cannot be null or whitespace" });
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "ManufacturersCode", Reason: "ManufacturersCode cannot be null or whitespace" });
-        Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Summary", Reason: "Summary cannot be null or whitespace" });
+        Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Summary", Reason: "Summary is too long" });
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Category", Reason: "Category cannot be null or whitespace" });
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "Manufacturer", Reason: "Manufacturer cannot be null or whitespace" });
         Assert.Contains(result.InvalidCells, ic => ic is { ColumnName: "DateCreated", Reason: "Invalid DateCreated format" });
