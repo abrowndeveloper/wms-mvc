@@ -11,9 +11,9 @@ public record ProductDto(
     DateTime DateTimeUpdated,
     bool IsActive,
     string? Summary,
-    decimal Weight,
-    string WeightUnit,
-    decimal CostPrice,
-    decimal SellPrice,
+    string Weight,
+    string CostPrice,
+    string SellPrice,
+    string MarginAmount,
     string Manufacturer,
     string Category); 

@@ -1,16 +1,61 @@
-@model WMS.UI.Views.ProductsModel
 @{
     ViewData["Title"] = "Products";
 }
 
+<script>
+    const gridOptions = {
+        columnDefs: [
+            { field: 'name', headerName: 'Name', sortable: true, filter: true },
+            { field: 'marginAmount', headerName: 'Margin', sortable: true, filter: true, },
+            { field: 'costPrice', headerName: 'Cost Price', sortable: true, filter: true,  },
+            { field: 'sellPrice', headerName: 'Sell Price', sortable: true, filter: true, },
+            { field: 'isActive', headerName: 'Active', sortable: true, filter: true, cellRenderer: params => params.value ? 'Yes' : 'No' },
+            { field: 'sku', headerName: 'SKU', sortable: true, filter: true },
+            { field: 'weight', headerName: 'Weight', sortable: true, filter: true },
+            { field: 'manufacturer', headerName: 'Manufacturer', sortable: true, filter: true },
+            { field: 'manufacturersCode', headerName: 'Manufacturer Code', sortable: true, filter: true },
+            { field: 'category', headerName: 'Category', sortable: true, filter: true },
+            { field: 'dateTimeCreated', headerName: 'Created', sortable: true, filter: true, valueFormatter: params => new Date(params.value).toLocaleDateString() },
+            { field: 'dateTimeUpdated', headerName: 'Updated', sortable: true, filter: true, valueFormatter: params => new Date(params.value).toLocaleDateString() }
+        ],
+        defaultColDef: {
+            resizable: true,
+            minWidth: 100
+        },
+        rowData: [],
+        pagination: true,
+        paginationPageSize: 20,
+        domLayout: 'autoHeight',
+        onGridReady: function(params) {
+            loadProducts(params.api);
+        }
+    };
+
+    async function loadProducts(gridApi) {
+        try {
+            const response = await fetch('/Home/GetProductsJson');
+            const products = await response.json();
+            
+            gridApi.applyTransaction({ add: products });
+        } catch (error) {
+            console.error('Error loading products:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const myGridElement = document.querySelector('#myGrid');
+        agGrid.createGrid(myGridElement, gridOptions);
+    });
+</script>
+
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Products</h5>
             </div>
             <div class="card-body">
-                
+                <div id="myGrid" style="width: 100%;"></div>
             </div>
         </div>
     </div>

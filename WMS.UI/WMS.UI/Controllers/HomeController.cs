@@ -24,12 +24,18 @@ public class HomeController : Controller
         return View();
     }
 
-    public async Task<IActionResult> Products()
+    public IActionResult Products()
+    {
+        return View(new ProductsModel());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProductsJson()
     {
         var request = new GetProductsRequest();
         var result = await _mediator.Send(request);
         
-        return View(new ProductsModel { Products = result.Products });
+        return Json(result.Products);
     }
 
     public IActionResult UploadProducts()

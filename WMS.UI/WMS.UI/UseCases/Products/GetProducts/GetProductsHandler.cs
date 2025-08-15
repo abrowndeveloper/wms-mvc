@@ -29,23 +29,38 @@ public class GetProductsHandler(
         
         var categories = await categoryService.GetCategoriesByIdsAsync(categoryIds, cancellationToken);
         
-        var productDtos = products.Select(p => new ProductDto(
-            p.Id,
-            p.Sku,
-            p.Name,
-            p.ManufacturersCode,
-            p.DateTimeCreated,
-            p.DateTimeUpdated,
-            p.IsActive,
-            p.Summary,
-            p.Weight,
-            p.WeightUnit.ToString(),
-            p.CostPrice,
-            p.SellPrice,
-            manufacturers.Single(m => m.Id == p.ManufacturerId).Name,
-            categories.Single(c => c.Id == p.CategoryId).Name
-        )).ToArray();
+        var productDtos = products
+            .Select(product => ToProductDto(product, manufacturers, categories))
+            .ToArray();
 
         return new GetProductsResult(productDtos);
+    }
+
+    private ProductDto ToProductDto(Product product, IReadOnlyList<Manufacturer> manufacturers, IReadOnlyList<Category> categories)
+    {
+        var margin = product.SellPrice - product.CostPrice;
+        
+        return new ProductDto(
+            product.Id,
+            product.Sku,
+            product.Name,
+            product.ManufacturersCode,
+            product.DateTimeCreated,
+            product.DateTimeUpdated,
+            product.IsActive,
+            product.Summary,
+            $"{product.Weight} {product.WeightUnit}",
+            ToGbp(product.CostPrice),
+            ToGbp(product.SellPrice),
+            ToGbp(margin),
+            manufacturers.Single(m => m.Id == product.ManufacturerId).Name,
+            categories.Single(c => c.Id == product.CategoryId).Name
+        );
+    }
+
+    private string ToGbp(decimal price)
+    {
+        return Math.Round(price, 2, MidpointRounding.AwayFromZero)
+            .ToString("C2", new System.Globalization.CultureInfo("en-GB"));
     }
 }
