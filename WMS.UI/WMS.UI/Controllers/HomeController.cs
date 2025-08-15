@@ -1,9 +1,8 @@
 using System.Diagnostics;
-using System.Globalization;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using WMS.UI.Models;
 using WMS.UI.UseCases.Products.UpsertProducts;
+using WMS.UI.UseCases.Products.GetProducts;
 using MediatR;
 using WMS.UI.Views;
 
@@ -25,9 +24,12 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Products()
+    public async Task<IActionResult> Products()
     {
-        return View(new ProductsModel());
+        var request = new GetProductsRequest();
+        var result = await _mediator.Send(request);
+        
+        return View(new ProductsModel { Products = result.Products });
     }
 
     public IActionResult UploadProducts()

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WMS.Domain.Manufacturers;
 using WMS.Infrastructure.Data;
 using DbManufacturer = WMS.Infrastructure.Models.Manufacturer;
@@ -8,10 +9,23 @@ public class ManufacturerRepository(
     WmsDbContext dbContext
     ) : IManufacturerRepository
 {
-    public async Task UpsertAsync(IReadOnlyList<Manufacturer> manufacturers, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Manufacturer>> GetManufacturersByIdsAsync(IReadOnlyList<int> manufacturerIds, CancellationToken cancellationToken = default)
     {
-        // TODO: Make upsert actually upsert.
-        
+        var dbManufacturers = await dbContext.Manufacturers
+            .Where(m => manufacturerIds.Contains(m.Id))
+            .ToArrayAsync(cancellationToken);
+
+        return dbManufacturers
+            .Select(m => new Manufacturer
+            {
+                Id = m.Id,
+                Name = m.Name,
+            })
+            .ToArray();
+    }
+    
+    public async Task InsertAsync(IReadOnlyList<Manufacturer> manufacturers, CancellationToken cancellationToken = default)
+    {
         var models = manufacturers
             .Select(m => new DbManufacturer
             {
