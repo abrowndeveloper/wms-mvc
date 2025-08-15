@@ -115,7 +115,7 @@ public class HomeController : Controller
 
         TempData["Error"] = "Successfully saved!";
         
-        return View(upsertResult.Product);
+        return View(new ProductModel { Product = upsertResult.Product });
     }
 
     public IActionResult Privacy()

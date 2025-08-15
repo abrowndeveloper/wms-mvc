@@ -18,4 +18,9 @@ public class ProductService(
     {
         await productRepository.Insert(products, cancellationToken);
     }
+    
+    public async Task UpdateAsync(IReadOnlyList<Product> products, CancellationToken cancellationToken = default)
+    {
+        await productRepository.Update(products, cancellationToken);
+    }
 }

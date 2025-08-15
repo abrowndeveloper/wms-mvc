@@ -88,4 +88,33 @@ public class ProductRepository(
         await dbContext.Products.AddRangeAsync(models, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+    
+    public async Task Update(IReadOnlyList<Product> products, CancellationToken cancellationToken)
+    {
+        foreach (var product in products)
+        {
+            var existingProduct = await dbContext.Products
+                .SingleOrDefaultAsync(p => p.Id == product.Id, cancellationToken);
+            
+            if (existingProduct != null)
+            {
+                existingProduct.Sku = product.Sku;
+                existingProduct.Name = product.Name;
+                existingProduct.ManufacturersCode = product.ManufacturersCode;
+                existingProduct.DateTimeUpdated = DateTime.UtcNow;
+                existingProduct.IsActive = product.IsActive;
+                existingProduct.Summary = product.Summary;
+                existingProduct.Weight = product.Weight;
+                existingProduct.WeightUnit = (int)product.WeightUnit;
+                existingProduct.CostPrice = product.CostPrice;
+                existingProduct.SellPrice = product.SellPrice;
+                existingProduct.CategoryId = product.CategoryId;
+                existingProduct.ManufacturerId = product.ManufacturerId;
+                
+                dbContext.Products.Update(existingProduct);
+            }
+        }
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

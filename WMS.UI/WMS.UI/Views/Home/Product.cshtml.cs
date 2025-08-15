@@ -1,4 +1,4 @@
-using WMS.UI.UseCases.Products.GetProduct;
+using WMS.UI.UseCases.Products.Common;
 
 namespace WMS.UI.Views;
 

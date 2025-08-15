@@ -2,6 +2,7 @@ using MediatR;
 using WMS.Domain.Products;
 using WMS.Domain.Units;
 using WMS.UI.UseCases.Products.UpsertProduct;
+using WMS.UI.UseCases.Products.Common;
 
 namespace WMS.UI.UseCases.Products.UpsertProduct;
 
@@ -49,10 +50,24 @@ public class UpsertProductHandler(
         
         // Domain validation required.
 
-        existingProduct is null
-            ? await productService.InsertAsync([product], cancellationToken)
-            : await productService.UpdateAsync(product, cancellationToken);
+        if (existingProduct is null)
+            await productService.InsertAsync([product], cancellationToken);
+        else
+            await productService.UpdateAsync([product], cancellationToken);
+        
+        var productDto = new ProductDto(
+            product.Id,
+            product.Sku,
+            product.Name,
+            product.ManufacturersCode,
+            product.IsActive,
+            product.Summary,
+            product.Weight,
+            product.WeightUnit.ToString(),
+            product.CostPrice,
+            product.SellPrice
+        );
 
-        return new(null, product);
+        return new(null, productDto);
     }
 } 
