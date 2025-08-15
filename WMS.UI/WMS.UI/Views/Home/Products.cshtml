@@ -5,6 +5,17 @@
 <script>
     const gridOptions = {
         columnDefs: [
+            { 
+                field: 'id', 
+                headerName: '', 
+                sortable: false, 
+                filter: false,
+                width: 50,
+                cellRenderer: params => `<a href="/home/product/${params.value}" class="text-primary block">Edit</a>`,
+                cellRendererParams: {
+                    suppressCount: true
+                }
+            },
             { field: 'name', headerName: 'Name', sortable: true, filter: true },
             { field: 'marginAmount', headerName: 'Margin', sortable: true, filter: true, },
             { field: 'costPrice', headerName: 'Cost Price', sortable: true, filter: true,  },
@@ -28,7 +39,7 @@
         domLayout: 'autoHeight',
         onGridReady: function(params) {
             loadProducts(params.api);
-        }
+        },
     };
 
     async function loadProducts(gridApi) {

@@ -19,7 +19,7 @@ public class GetProductHandler(IProductService productService) : IRequestHandler
             product.Name,
             product.ManufacturersCode,
             product.IsActive,
-            product.Summary,
+            product.Summary ?? string.Empty,
             product.Weight,
             product.WeightUnit.ToString(),
             product.CostPrice,

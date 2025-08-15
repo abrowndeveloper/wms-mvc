@@ -13,3 +13,4 @@ A Warehouse Management System built in MVC using Clean Architecture and MediatR.
 - Actually implement upsert
 - You could argue you wouldn't want to update categories or manufacturers when upserting products
 - No upsert added for Stock
+- ProductController would be good

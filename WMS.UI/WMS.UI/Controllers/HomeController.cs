@@ -76,13 +76,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Product(Guid? id)
     {
         if (id is null)
-            return View(
-                new ProductModel
-                {
-                    Product = new ProductDto(null, string.Empty, string.Empty, string.Empty, false, string.Empty, 0,
-                        WeightUnit.KG.ToString(), 0, 0)
-                }
-            );
+            return View(new ProductModel());
 
         var getRequest = new GetProductRequest(id.Value);
         var getResult = await _mediator.Send(getRequest);
@@ -95,7 +89,16 @@ public class HomeController : Controller
 
         var productModel = new ProductModel
         {
-            Product = getResult.Product
+            Id = getResult.Product.Id,
+            Sku = getResult.Product.Sku,
+            Name = getResult.Product.Name,
+            ManufacturersCode = getResult.Product.ManufacturersCode,
+            IsActive = getResult.Product.IsActive,
+            Summary = getResult.Product.Summary,
+            Weight = getResult.Product.Weight,
+            WeightUnit = getResult.Product.WeightUnit,
+            CostPrice = getResult.Product.CostPrice,
+            SellPrice = getResult.Product.SellPrice
         };
 
         return View(productModel);
@@ -104,7 +107,20 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Product(ProductModel model)
     {
-        var upsertRequest = new UpsertProductRequest(model.Product);
+        var productDto = new ProductDto(
+            model.Id,
+            model.Sku,
+            model.Name,
+            model.ManufacturersCode,
+            model.IsActive,
+            model.Summary,
+            model.Weight,
+            model.WeightUnit,
+            model.CostPrice,
+            model.SellPrice
+        );
+
+        var upsertRequest = new UpsertProductRequest(productDto);
         var upsertResult = await _mediator.Send(upsertRequest);
 
         if (upsertResult.Error is not null)
@@ -113,9 +129,24 @@ public class HomeController : Controller
             return View(model);
         }
 
-        TempData["Error"] = "Successfully saved!";
+        TempData["Success"] = "Successfully saved!";
         
-        return View(new ProductModel { Product = upsertResult.Product });
+        // Return the updated model with the result data
+        var updatedModel = new ProductModel
+        {
+            Id = upsertResult.Product.Id,
+            Sku = upsertResult.Product.Sku,
+            Name = upsertResult.Product.Name,
+            ManufacturersCode = upsertResult.Product.ManufacturersCode,
+            IsActive = upsertResult.Product.IsActive,
+            Summary = upsertResult.Product.Summary,
+            Weight = upsertResult.Product.Weight,
+            WeightUnit = upsertResult.Product.WeightUnit,
+            CostPrice = upsertResult.Product.CostPrice,
+            SellPrice = upsertResult.Product.SellPrice
+        };
+        
+        return View(updatedModel);
     }
 
     public IActionResult Privacy()
